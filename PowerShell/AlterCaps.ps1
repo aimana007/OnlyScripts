@@ -1,6 +1,12 @@
-# Read from pipeline/stdin
-$input | ForEach-Object {
-    $text = $_
+param(
+    [Parameter(ValueFromPipeline=$true, ValueFromRemainingArguments=$true)]
+    [string[]]$InputText
+)
+
+process {
+    # Handle both pipeline input and command-line arguments
+    $text = if ($InputText) { $InputText -join ' ' } else { $_ }
+    
     $result = ""
     $letterCount = 0
     
@@ -15,7 +21,6 @@ $input | ForEach-Object {
             }
             $letterCount++
         } else {
-            # Keep non-letter characters as-is (spaces, punctuation, etc.)
             $result += $char
         }
     }
